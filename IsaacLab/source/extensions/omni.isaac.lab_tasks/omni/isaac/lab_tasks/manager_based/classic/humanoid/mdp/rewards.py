@@ -12,11 +12,22 @@ import omni.isaac.lab.utils.math as math_utils
 import omni.isaac.lab.utils.string as string_utils
 from omni.isaac.lab.assets import Articulation
 from omni.isaac.lab.managers import ManagerTermBase, RewardTermCfg, SceneEntityCfg
-
+import omni.isaac.lab.envs.mdp.observations as obs_full
 from . import observations as obs
+
+
 
 if TYPE_CHECKING:
     from omni.isaac.lab.envs import ManagerBasedRLEnv
+
+def pose_match_bonus(
+    env: ManagerBasedRLEnv, threshold: float, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")
+) -> torch.Tensor:
+    """Reward for matching the pose of the robot to the target pose."""
+    pose_match = obs_full.body_state_w(env, asset_cfg)
+    print(pose_match)
+    print("uuuuuuuuuuuuuuuuuuuuuuu")
+    return 1.0
 
 
 def upright_posture_bonus(
@@ -26,6 +37,19 @@ def upright_posture_bonus(
     up_proj = obs.base_up_proj(env, asset_cfg).squeeze(-1)
     return (up_proj > threshold).float()
 
+def ball_distance_bonus(
+    env: ManagerBasedRLEnv, threshold: float, asset_cfg: SceneEntityCfg = SceneEntityCfg("ball")
+) -> torch.Tensor:
+    """Reward for maintaining an upright posture."""
+    ball_dist = obs_full.root_pos_w(env, asset_cfg)[:, 1] 
+    return (ball_dist > 1).float() + ((ball_dist - 0.315) / 5).float()
+
+def ball_velocity_bonus(
+    env: ManagerBasedRLEnv, threshold: float, asset_cfg: SceneEntityCfg = SceneEntityCfg("ball")
+) -> torch.Tensor:
+    """Reward for maintaining an upright posture."""
+    ball_lin_vel = obs_full.root_lin_vel_w(env, asset_cfg)[:, 1]
+    return (ball_lin_vel > 0.1).float() + ((ball_lin_vel) / 5).float()
 
 def move_to_target_bonus(
     env: ManagerBasedRLEnv,

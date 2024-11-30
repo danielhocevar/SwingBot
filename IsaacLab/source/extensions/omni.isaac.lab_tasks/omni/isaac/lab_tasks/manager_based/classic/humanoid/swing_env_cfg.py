@@ -39,8 +39,8 @@ class MySceneCfg(InteractiveSceneCfg):
         debug_vis=False,
     )
 
-    cube = RigidObjectCfg(
-        prim_path="/World/cube",
+    ball = RigidObjectCfg(
+        prim_path="{ENV_REGEX_NS}/ball",
         spawn=sim_utils.SphereCfg(
             radius=0.04,
             rigid_props=sim_utils.RigidBodyPropertiesCfg(),
@@ -53,7 +53,7 @@ class MySceneCfg(InteractiveSceneCfg):
                 restitution=0.0        # Keep zero restitution for no bouncing
             )
         ),
-        init_state=RigidObjectCfg.InitialStateCfg(pos=(0.516, 0.245, 0.08)),
+        init_state=RigidObjectCfg.InitialStateCfg(pos=(0.546, 0.315, 0.08)),
     )
     # robot
     robot = ArticulationCfg(
@@ -108,26 +108,26 @@ class MySceneCfg(InteractiveSceneCfg):
             "body": ImplicitActuatorCfg(
                 joint_names_expr=[".*"],
                 stiffness={
-                    ".*_waist.*": 20.0,
+                    ".*_waist.*": 50.0,
                     ".*_upper_arm.*": 100.0,
                     "pelvis": 100.0,
-                    ".*_lower_arm": 200.0,
+                    ".*_lower_arm": 100.0,
                     ".*_thigh:0": 100.0,
-                    ".*_thigh:1": 200.0,
+                    ".*_thigh:1": 100.0,
                     ".*_thigh:2": 100.0,
                     ".*_shin": 50.0,
                     ".*_foot.*": 20.0,
                 },
                 damping={
-                    ".*_waist.*": 5.0,
-                    ".*_upper_arm.*": 5.0,
-                    "pelvis": 5.0,
-                    ".*_lower_arm": 1.0,
-                    ".*_thigh:0": 5.0,
-                    ".*_thigh:1": 5.0,
-                    ".*_thigh:2": 5.0,
-                    ".*_shin": 0.1,
-                    ".*_foot.*": 1.0,
+                    ".*_waist.*": 2.0,
+                    ".*_upper_arm.*": 2.0,
+                    "pelvis": 2.0,
+                    ".*_lower_arm": 2.0,
+                    ".*_thigh:0": 2.0,
+                    ".*_thigh:1": 2.0,
+                    ".*_thigh:2": 2.0,
+                    ".*_shin": 2.0,
+                    ".*_foot.*": 2.0,
                 },
             ),
         },
@@ -223,6 +223,7 @@ class ObservationsCfg:
         base_angle_to_target = ObsTerm(func=mdp.base_angle_to_target, params={"target_pos": (1000.0, 0.0, 0.0)})
         base_up_proj = ObsTerm(func=mdp.base_up_proj)
         base_heading_proj = ObsTerm(func=mdp.base_heading_proj, params={"target_pos": (1000.0, 0.0, 0.0)})
+        joint_pos = ObsTerm(func=mdp.joint_pos)
         joint_pos_norm = ObsTerm(func=mdp.joint_pos_limit_normalized)
         joint_vel_rel = ObsTerm(func=mdp.joint_vel_rel, scale=0.1)
         feet_body_forces = ObsTerm(
@@ -231,7 +232,14 @@ class ObservationsCfg:
             params={"asset_cfg": SceneEntityCfg("robot", body_names=["left_foot", "right_foot"])},
         )
         actions = ObsTerm(func=mdp.last_action)
-
+        ball_pos = ObsTerm(
+            func=mdp.root_pos_w, 
+            params={"asset_cfg": SceneEntityCfg("ball")}
+        )
+        ball_lin_vel = ObsTerm(
+            func=mdp.root_lin_vel_w, 
+            params={"asset_cfg": SceneEntityCfg("ball")}
+        )
         def __post_init__(self):
             self.enable_corruption = False
             self.concatenate_terms = False
@@ -259,21 +267,41 @@ class EventCfg:
         },
     )
 
+    reset_ball = EventTerm(
+        func=mdp.reset_root_state_uniform,
+        mode="reset",
+        params={
+            "asset_cfg": SceneEntityCfg("ball"),
+            "pose_range": {
+                "x": (0.0, 0.0),  # Fixed x position
+                "y": (0.0, 0.0),  # Fixed y position
+                "z": (0.0, 0.0),    # Fixed z position
+            },
+            "velocity_range": {
+                "linear": (0.0, 0.0),  # Zero initial velocity
+                "angular": (0.0, 0.0)  # Zero initial angular velocity
+            }
+        },
+    )
+
 
 @configclass
 class RewardsCfg:
     """Reward terms for the MDP."""
 
+    distance = RewTerm(func=mdp.ball_distance_bonus, weight=2.0, params={"threshold": 1.0})
+    velocity = RewTerm(func=mdp.ball_velocity_bonus, weight=1.0, params={"threshold": 0.1})
+    pose_match = RewTerm(func=mdp.pose_match_bonus, weight=1.0, params={"threshold": 0.98})
     # (1) Reward for moving forward
-    progress = RewTerm(func=mdp.progress_reward, weight=1.0, params={"target_pos": (1000.0, 0.0, 0.0)})
+    # progress = RewTerm(func=mdp.progress_reward, weight=1.0, params={"target_pos": (1000.0, 0.0, 0.0)})
     # (2) Stay alive bonus
     alive = RewTerm(func=mdp.is_alive, weight=2.0)
     # (3) Reward for non-upright posture
-    upright = RewTerm(func=mdp.upright_posture_bonus, weight=0.1, params={"threshold": 0.93})
+    upright = RewTerm(func=mdp.upright_posture_bonus, weight=0.5, params={"threshold": 0.93})
     # (4) Reward for moving in the right direction
-    move_to_target = RewTerm(
-        func=mdp.move_to_target_bonus, weight=0.5, params={"threshold": 0.8, "target_pos": (1000.0, 0.0, 0.0)}
-    )
+    # move_to_target = RewTerm(
+    #     func=mdp.move_to_target_bonus, weight=0.5, params={"threshold": 0.8, "target_pos": (1000.0, 0.0, 0.0)}
+    # )
     # (5) Penalty for large action commands
     action_l2 = RewTerm(func=mdp.action_l2, weight=-0.01)
     # (6) Penalty for energy consumption

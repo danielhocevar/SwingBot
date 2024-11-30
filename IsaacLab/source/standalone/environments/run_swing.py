@@ -18,7 +18,7 @@ import omni.isaac.lab_tasks
 env_cfg = parse_env_cfg(
     "Swing-v0",
     device="cpu",  # or "cpu" if no GPU
-    num_envs=1  # or however many environments you want
+    num_envs=2  # or however many environments you want
 )
 
 # Create the environment using gym
@@ -27,7 +27,7 @@ env = gym.make("Swing-v0", cfg=env_cfg)
 # Reset the environment
 obs, info = env.reset()
 
-initial_action = torch.zeros((1, 21))  # Changed from (1, 21) to (100, 21)
+initial_action = torch.zeros((2, 21))  # Changed from (1, 21) to (100, 21)
 # These values create a stable standing pose
 # initial_action[:] = torch.tensor([
 #     0.0,  # hip_x
@@ -168,16 +168,18 @@ target_pose = None
 # Run simulation loop
 while simulation_app.is_running():
     # Step the environment
-    print("??????????????????????????")
-    print(actions)
-    print("??????????????????????????")
+   
     obs, reward, terminated, truncated, info = env.step(actions)
-    print(obs['policy']['joint_pos_norm'])
+    print("??????????????????????????")
+    print(obs['policy'])
+    print("??????????????????????????")
     if target_pose is None:
         target_pose = obs['policy']['joint_pos_norm']
     # Sample random actions (in a real scenario, you'd use your policy here)
     joint_pos = obs['policy']['joint_pos_norm']
     joint_vel = obs['policy']['joint_vel_rel']
+
+    
     
     # Compute PD control
     position_error = target_pose - joint_pos

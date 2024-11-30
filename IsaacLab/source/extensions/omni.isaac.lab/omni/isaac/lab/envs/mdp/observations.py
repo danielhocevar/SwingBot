@@ -64,6 +64,13 @@ def root_pos_w(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg(
     asset: RigidObject = env.scene[asset_cfg.name]
     return asset.data.root_pos_w - env.scene.env_origins
 
+def body_state_w(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")) -> torch.Tensor:
+    """State of all bodies `[pos, quat, lin_vel, ang_vel]` in simulation world frame.
+    """
+    asset: Articulation = env.scene[asset_cfg.name]
+    print(asset.data.body_state_w[..., :3])
+    print(asset.data.body_names)
+    return asset.data.body_state_w[..., :3]
 
 def root_quat_w(
     env: ManagerBasedEnv, make_quat_unique: bool = False, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")
@@ -76,7 +83,6 @@ def root_quat_w(
     """
     # extract the used quantities (to enable type-hinting)
     asset: RigidObject = env.scene[asset_cfg.name]
-
     quat = asset.data.root_quat_w
     # make the quaternion real-part positive if configured
     return math_utils.quat_unique(quat) if make_quat_unique else quat
@@ -96,6 +102,9 @@ def root_ang_vel_w(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntity
     return asset.data.root_ang_vel_w
 
 
+
+
+
 """
 Joint state.
 """
@@ -108,6 +117,10 @@ def joint_pos(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("
     """
     # extract the used quantities (to enable type-hinting)
     asset: Articulation = env.scene[asset_cfg.name]
+    # print("-----------------------------")
+    # print(asset.data.body_state_w)
+    # print(asset.data.body_names)
+    # print("-----------------------------")
     return asset.data.joint_pos[:, asset_cfg.joint_ids]
 
 
@@ -130,17 +143,16 @@ def joint_pos_limit_normalized(
     """
     # extract the used quantities (to enable type-hinting)
     asset: Articulation = env.scene[asset_cfg.name]
-    print("-----------------------------")
-    print(asset.data.joint_pos[:, asset_cfg.joint_ids])
-    print(asset.data.soft_joint_pos_limits[:, asset_cfg.joint_ids, 0])
-    print(asset.data.soft_joint_pos_limits[:, asset_cfg.joint_ids, 1])
-    print("-----------------------------")
+    # print("-----------------------------")
+    # print(asset.data.joint_pos[:, asset_cfg.joint_ids])
+    # print(asset.data.soft_joint_pos_limits[:, asset_cfg.joint_ids, 0])
+    # print(asset.data.soft_joint_pos_limits[:, asset_cfg.joint_ids, 1])
+    # print("-----------------------------")
     return math_utils.scale_transform(
         asset.data.joint_pos[:, asset_cfg.joint_ids],
         asset.data.soft_joint_pos_limits[:, asset_cfg.joint_ids, 0],
         asset.data.soft_joint_pos_limits[:, asset_cfg.joint_ids, 1],
     )
-
 
 def joint_vel(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")):
     """The joint velocities of the asset.

@@ -57,6 +57,7 @@ def base_heading_proj(
     return heading_proj.view(env.num_envs, 1)
 
 
+
 def base_angle_to_target(
     env: ManagerBasedEnv, target_pos: tuple[float, float, float], asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")
 ) -> torch.Tensor:
