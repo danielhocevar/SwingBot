@@ -68,9 +68,10 @@ def body_state_w(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCf
     """State of all bodies `[pos, quat, lin_vel, ang_vel]` in simulation world frame.
     """
     asset: Articulation = env.scene[asset_cfg.name]
-    print(asset.data.body_state_w[..., :3])
-    print(asset.data.body_names)
-    return asset.data.body_state_w[..., :3]
+    # print("-----------------------------")
+    # print(asset.data.body_state_w[..., :3].shape)
+    # print(env.scene.env_origins.shape)
+    return asset.data.body_state_w[..., :3] - env.scene.env_origins.unsqueeze(1)
 
 def root_quat_w(
     env: ManagerBasedEnv, make_quat_unique: bool = False, asset_cfg: SceneEntityCfg = SceneEntityCfg("robot")
@@ -532,6 +533,7 @@ def last_action(env: ManagerBasedEnv, action_name: str | None = None) -> torch.T
     The name of the action term for which the action is required. If None, the
     entire action tensor is returned.
     """
+    # print(env.common_step_counter)
     if action_name is None:
         return env.action_manager.action
     else:
@@ -546,3 +548,11 @@ Commands.
 def generated_commands(env: ManagerBasedRLEnv, command_name: str) -> torch.Tensor:
     """The generated command from command term in the command manager with the given name."""
     return env.command_manager.get_command(command_name)
+
+
+def episode_length(env: ManagerBasedRLEnv) -> torch.Tensor:
+    if env.episode_length_buf is not None:
+        cur_episode_length = env.episode_length_buf.unsqueeze(1)
+    else:
+        cur_episode_length = torch.zeros((env.num_envs, 1), dtype=torch.int32)
+    return cur_episode_length / 180

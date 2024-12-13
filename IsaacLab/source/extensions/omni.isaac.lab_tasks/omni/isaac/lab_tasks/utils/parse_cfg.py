@@ -116,9 +116,6 @@ def parse_env_cfg(
         RuntimeError: If the configuration for the task is not a class. We assume users always use a class for the
             environment configuration.
     """
-    print("--------------------------------")
-    print("task name", task_name)
-    print("--------------------------------")
     # load the default configuration
     cfg = load_cfg_from_registry(task_name, "env_cfg_entry_point")
 

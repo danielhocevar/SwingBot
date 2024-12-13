@@ -5,7 +5,7 @@ policy: 'MlpPolicy'
 n_timesteps: !!float 5e7
 batch_size: 256
 n_steps: 512
-gamma: 0.99
+gamma: 0.95
 learning_rate: !!float 2.5e-4
 ent_coef: 0.0
 clip_range: 0.2
@@ -18,5 +18,5 @@ policy_kwargs: "dict(
                   log_std_init=-1,
                   ortho_init=False,
                   activation_fn=nn.ReLU,
-                  net_arch=dict(pi=[256, 256], vf=[256, 256])
+                  net_arch=dict(pi=[1024, 512], vf=[1024, 512])
                 )"

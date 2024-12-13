@@ -35,7 +35,6 @@ def base_up_proj(env: ManagerBasedEnv, asset_cfg: SceneEntityCfg = SceneEntityCf
     asset: Articulation = env.scene[asset_cfg.name]
     # compute base up vector
     base_up_vec = -asset.data.projected_gravity_b
-
     return base_up_vec[:, 2].unsqueeze(-1)
 
 

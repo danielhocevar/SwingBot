@@ -63,6 +63,8 @@ class ManagerBasedRLEnv(ManagerBasedEnv, gym.Env):
     cfg: ManagerBasedRLEnvCfg
     """Configuration for the environment."""
 
+    episode_length_buf: torch.Tensor = None
+
     def __init__(self, cfg: ManagerBasedRLEnvCfg, render_mode: str | None = None, **kwargs):
         """Initialize the environment.
 
@@ -89,6 +91,9 @@ class ManagerBasedRLEnv(ManagerBasedEnv, gym.Env):
     """
     Properties.
     """
+    # @property
+    # def get_episode_length(self):
+    #     return self.episode_length_buf
 
     @property
     def max_episode_length_s(self) -> float:

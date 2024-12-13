@@ -53,14 +53,14 @@ class MySceneCfg(InteractiveSceneCfg):
                 restitution=0.0        # Keep zero restitution for no bouncing
             )
         ),
-        init_state=RigidObjectCfg.InitialStateCfg(pos=(0.546, 0.315, 0.08)),
+        init_state=RigidObjectCfg.InitialStateCfg(pos=(0.706, 0.315, 0.08)),
     )
     # robot
     robot = ArticulationCfg(
         prim_path="{ENV_REGEX_NS}/Robot",
         spawn=sim_utils.UsdFileCfg(
             # usd_path=f"{ISAAC_NUCLEUS_DIR}/Robots/Humanoid/humanoid_instanceable.usd",
-            usd_path=f"/home/daniel/development/csc2626/final-project/IsaacLab/humanoid_w6.usd",
+            usd_path=f"/home/daniel/development/csc2626/final-project/IsaacLab/humanoid_w9.usd",
             rigid_props=sim_utils.RigidBodyPropertiesCfg(
                 disable_gravity=False,
                 max_depenetration_velocity=10.0,
@@ -81,53 +81,53 @@ class MySceneCfg(InteractiveSceneCfg):
             #     ".*": 0.0,
             # },
             joint_pos={
-            "lower_waist:0": 0.2143025 + 0,
-            "lower_waist:1": 0.29417243 + 0,
-            "right_upper_arm:0": (0.4 - 0.30267698) + 0.385398,
-            "right_upper_arm:2": (0.7 + 0.46815178) - 0.615472907,
-            "left_upper_arm:0": 0.3498035 - 0.785398,
-            "left_upper_arm:2": 0.519223 - 0.815472907,
-            "pelvis": 0.0 + 0.0,
-            "right_lower_arm": 0.67 * (0.85204905 - 2),
-            "left_lower_arm": 0.67 * (0.8723765 - 2),
-            "right_thigh:0": 0.67 * (-0.14598082 + 0.0),
-            "right_thigh:1": 0.67 * (-0.77993596 + 0.0),
-            "right_thigh:2": 0.0 + 0.0,
-            "left_thigh:0": 0.67 * (0.14598082 + 0.0),
-            "left_thigh:1": 0.67 * (-0.836486 + 0.0),
-            "left_thigh:2": 0.0 + 0.0,
-            "right_shin": 3.33 * (-0.11140303 + 0.0),
-            "left_shin": 3.33 * (-0.11913639 + 0.0),
-            "right_foot:0": 0.0 + 0.0,
-            "right_foot:1": 0.0 + 0.0,
-            "left_foot:0": 0.0 + 0.0,
-            "left_foot:1": 0.0 + 0.0,
-        },
+                "lower_waist:0": 0.2143025 + 0,
+                "lower_waist:1": 0.29417243 + 0,
+                "right_upper_arm:0": (0.4 - 0.30267698) + 0.385398,
+                "right_upper_arm:2": (0.7 + 0.46815178) - 0.615472907,
+                "left_upper_arm:0": 0.3498035 - 0.785398,
+                "left_upper_arm:2": 0.519223 - 0.815472907,
+                "pelvis": 0.0 + 0.0,
+                "right_lower_arm": 0.67 * (0.85204905 - 2),
+                "left_lower_arm": 0.67 * (0.8723765 - 2),
+                "right_thigh:0": 0.67 * (-0.14598082 + 0.0),
+                "right_thigh:1": 0.67 * (-0.77993596 + 0.0),
+                "right_thigh:2": 0.0 + 0.0,
+                "left_thigh:0": 0.67 * (0.14598082 + 0.0),
+                "left_thigh:1": 0.67 * (-0.836486 + 0.0),
+                "left_thigh:2": 0.0 + 0.0,
+                "right_shin": 3.33 * (-0.11140303 + 0.0),
+                "left_shin": 3.33 * (-0.11913639 + 0.0),
+                "right_foot:0": 0.0 + 0.0,
+                "right_foot:1": 0.0 + 0.0,
+                "left_foot:0": 0.0 + 0.0,
+                "left_foot:1": 0.0 + 0.0,
+            },
         ),
         actuators={
             "body": ImplicitActuatorCfg(
                 joint_names_expr=[".*"],
                 stiffness={
-                    ".*_waist.*": 50.0,
+                    ".*_waist.*": 100.0,
                     ".*_upper_arm.*": 100.0,
                     "pelvis": 100.0,
                     ".*_lower_arm": 100.0,
                     ".*_thigh:0": 100.0,
                     ".*_thigh:1": 100.0,
                     ".*_thigh:2": 100.0,
-                    ".*_shin": 50.0,
-                    ".*_foot.*": 20.0,
+                    ".*_shin": 120.0,
+                    ".*_foot.*": 50.0,
                 },
                 damping={
-                    ".*_waist.*": 2.0,
-                    ".*_upper_arm.*": 2.0,
-                    "pelvis": 2.0,
-                    ".*_lower_arm": 2.0,
-                    ".*_thigh:0": 2.0,
-                    ".*_thigh:1": 2.0,
-                    ".*_thigh:2": 2.0,
-                    ".*_shin": 2.0,
-                    ".*_foot.*": 2.0,
+                    ".*_waist.*": 20.0,
+                    ".*_upper_arm.*": 20.0,
+                    "pelvis": 20.0,
+                    ".*_lower_arm": 20.0,
+                    ".*_thigh:0": 20.0,
+                    ".*_thigh:1": 20.0,
+                    ".*_thigh:2": 20.0,
+                    ".*_shin": 20.0,
+                    ".*_foot.*": 20.0,
                 },
             ),
         },
@@ -149,64 +149,74 @@ class MySceneCfg(InteractiveSceneCfg):
 class ActionsCfg:
     """Action specifications for the MDP."""
 
-    # joint_effort = mdp.JointEffortActionCfg(
-    #     asset_name="robot",
-    #     joint_names=[".*"],
-    #     scale={
-    #         ".*_waist.*": 67.5,
-    #         ".*_upper_arm.*": 67.5,
-    #         "pelvis": 67.5,
-    #         ".*_lower_arm": 45.0,
-    #         ".*_thigh:0": 45.0,
-    #         ".*_thigh:1": 135.0,
-    #         ".*_thigh:2": 45.0,
-    #         ".*_shin": 90.0,
-    #         ".*_foot.*": 22.5,
-    #     },
-    # )
-
-    joint_positions = mdp.JointPositionActionCfg(
-        use_default_offset=False,
+    joint_effort = mdp.JointEffortActionCfg(
         asset_name="robot",
         joint_names=[".*"],
-        offset={
-            "lower_waist:0": 0.8143025 + 0,
-            "lower_waist:1": -0.89417243 + 0,
-            "right_upper_arm:0": (0.4 - 0.30267698) + 0.385398,
-            "right_upper_arm:2": (0.7 + 0.46815178) - 0.615472907,
-            "left_upper_arm:0": 0.3498035 - 0.785398,
-            "left_upper_arm:2": 0.519223 - 0.815472907,
-            "pelvis": 0.0 + 0.0,
-            "right_lower_arm": 0.67 * (0.85204905 - 2),
-            "left_lower_arm": 0.67 * (0.8723765 - 2),
-            "right_thigh:0": 0.67 * (-0.14598082 + 0.0),
-            "right_thigh:1": 0.67 * (-0.77993596 + 0.0),
-            "right_thigh:2": 0.0 + 0.0,
-            "left_thigh:0": 0.67 * (0.14598082 + 0.0),
-            "left_thigh:1": 0.67 * (-0.836486 + 0.0),
-            "left_thigh:2": 0.0 + 0.0,
-            "right_shin": 3.33 * (-0.11140303 + 0.0),
-            "left_shin": 3.33 * (-0.11913639 + 0.0),
-            "right_foot:0": 0.0 + 0.0,
-            "right_foot:1": 0.0 + 0.0,
-            "left_foot:0": 0.0 + 0.0,
-            "left_foot:1": 0.0 + 0.0,
-        },
-        # offset={
-
-        # Scale the position targets (similar ratios to your original effort scaling)
         scale={
-            ".*_waist.*": 1.0,
-            ".*_upper_arm.*": 1.0,
-            "pelvis": 1.0,
-            ".*_lower_arm": 0.67,
-            ".*_thigh:0": 0.67,
-            ".*_thigh:1": 0.67,
-            ".*_thigh:2": 0.67,
-            ".*_shin": 3.33,
-            ".*_foot.*": 0.33,
+            ".*_waist.*": 67.5,
+            ".*_upper_arm.*": 67.5,
+            "pelvis": 67.5,
+            ".*_lower_arm": 45.0,
+            ".*_thigh:0": 45.0,
+            ".*_thigh:1": 135.0,
+            ".*_thigh:2": 45.0,
+            ".*_shin": 90.0,
+            ".*_foot.*": 22.5,
         },
     )
+    #['torso', 'head', 'lower_waist', 'right_upper_arm', 'left_upper_arm', 'pelvis', 'right_lower_arm', 'left_lower_arm', 'right_thigh', 'left_thigh', 'right_hand', 'left_hand', 'right_shin', 'left_shin', 'Club', 'right_foot', 'left_foot']
+    # joint_positions = mdp.JointPositionActionCfg(
+    #     use_default_offset=False,
+    #     asset_name="robot",
+    #     joint_names=[".*"],
+    #     offset={
+    #         "lower_waist:0": 0.8143025 + 0,
+    #         "lower_waist:1": -0.42,#-0.89417243 + 0,
+    #         "right_upper_arm:0": (0.4 - 0.30267698) + 0.385398,
+    #         "right_upper_arm:2": (0.7 + 0.46815178) - 0.615472907,
+    #         "left_upper_arm:0": 0.3498035 - 0.785398,
+    #         "left_upper_arm:2": 0.519223 - 0.815472907,
+    #         "pelvis": 0.0 + 0.0,
+    #         "right_lower_arm": 0.67 * (0.85204905 - 2),
+    #         "left_lower_arm": 0.67 * (0.8723765 - 2),
+    #         "right_thigh:0": 0.67 * (-0.14598082 + 0.0),
+    #         "right_thigh:1": 0.67 * (-0.77993596 + 0.0),
+    #         "right_thigh:2": 0.0 + 0.0,
+    #         "left_thigh:0": 0.67 * (0.14598082 + 0.0),
+    #         "left_thigh:1": 0.67 * (-0.836486 + 0.0),
+    #         "left_thigh:2": 0.0 + 0.0,
+    #         "right_shin": 3.33 * (-0.11140303 + 0.0),
+    #         "left_shin": 3.33 * (-0.11913639 + 0.0),
+    #         "right_foot:0": 0.0 + 0.0,
+    #         "right_foot:1": 0.0 + 0.0,
+    #         "left_foot:0": 0.0 + 0.0,
+    #         "left_foot:1": 0.0 + 0.0,
+    #     },
+
+    #     scale={
+    #         ".*_waist.*": 1.5,
+    #         ".*_upper_arm.*": 1.5,
+    #         "pelvis": 1.5,
+    #         ".*_lower_arm": 1.5,
+    #         ".*_thigh:0": 1.5,
+    #         ".*_thigh:1": 1.5,
+    #         ".*_thigh:2": 1.5,
+    #         ".*_shin": 2.0,
+    #         ".*_foot.*": 1.0,
+    #     },
+
+    #     # scale={
+    #     #     ".*_waist.*": 1.0,
+    #     #     ".*_upper_arm.*": 1.0,
+    #     #     "pelvis": 1.0,
+    #     #     ".*_lower_arm": 0.67,
+    #     #     ".*_thigh:0": 0.67,
+    #     #     ".*_thigh:1": 0.67,
+    #     #     ".*_thigh:2": 0.67,
+    #     #     ".*_shin": 3.33,
+    #     #     ".*_foot.*": 0.33,
+    #     # },
+    # )
 
 
 @configclass
@@ -220,10 +230,10 @@ class ObservationsCfg:
         base_lin_vel = ObsTerm(func=mdp.base_lin_vel)
         base_ang_vel = ObsTerm(func=mdp.base_ang_vel, scale=0.25)
         base_yaw_roll = ObsTerm(func=mdp.base_yaw_roll)
-        base_angle_to_target = ObsTerm(func=mdp.base_angle_to_target, params={"target_pos": (1000.0, 0.0, 0.0)})
-        base_up_proj = ObsTerm(func=mdp.base_up_proj)
-        base_heading_proj = ObsTerm(func=mdp.base_heading_proj, params={"target_pos": (1000.0, 0.0, 0.0)})
-        joint_pos = ObsTerm(func=mdp.joint_pos)
+        # base_angle_to_target = ObsTerm(func=mdp.base_angle_to_target, params={"target_pos": (1000.0, 0.0, 0.0)})
+        # base_up_proj = ObsTerm(func=mdp.base_up_proj)
+        # base_heading_proj = ObsTerm(func=mdp.base_heading_proj, params={"target_pos": (1000.0, 0.0, 0.0)})
+        
         joint_pos_norm = ObsTerm(func=mdp.joint_pos_limit_normalized)
         joint_vel_rel = ObsTerm(func=mdp.joint_vel_rel, scale=0.1)
         feet_body_forces = ObsTerm(
@@ -232,14 +242,16 @@ class ObservationsCfg:
             params={"asset_cfg": SceneEntityCfg("robot", body_names=["left_foot", "right_foot"])},
         )
         actions = ObsTerm(func=mdp.last_action)
+        current_timestep = ObsTerm(func=mdp.episode_length)
+       
         ball_pos = ObsTerm(
             func=mdp.root_pos_w, 
             params={"asset_cfg": SceneEntityCfg("ball")}
         )
-        ball_lin_vel = ObsTerm(
-            func=mdp.root_lin_vel_w, 
-            params={"asset_cfg": SceneEntityCfg("ball")}
-        )
+        # ball_lin_vel = ObsTerm(
+        #     func=mdp.root_lin_vel_w, 
+        #     params={"asset_cfg": SceneEntityCfg("ball")}
+        # )
         def __post_init__(self):
             self.enable_corruption = False
             self.concatenate_terms = False
@@ -262,8 +274,10 @@ class EventCfg:
         func=mdp.reset_joints_by_offset,
         mode="reset",
         params={
-            "position_range": (-0.2, 0.2),
-            "velocity_range": (-0.1, 0.1),
+            "position_range": (0.0, 0.0),
+            "velocity_range": (0.0, 0.0),
+            # "position_range": (-0.2, 0.2),
+            # "velocity_range": (-0.1, 0.1),
         },
     )
 
@@ -289,58 +303,67 @@ class EventCfg:
 class RewardsCfg:
     """Reward terms for the MDP."""
 
-    distance = RewTerm(func=mdp.ball_distance_bonus, weight=2.0, params={"threshold": 1.0})
-    velocity = RewTerm(func=mdp.ball_velocity_bonus, weight=1.0, params={"threshold": 0.1})
-    pose_match = RewTerm(func=mdp.pose_match_bonus, weight=1.0, params={"threshold": 0.98})
+    distance = RewTerm(func=mdp.ball_distance_bonus, weight=0.3, params={"threshold": 1.0})
+    # velocity = RewTerm(func=mdp.ball_velocity_bonus, weight=0.3, params={"threshold": 0.1})
+    # pose_match = RewTerm(func=mdp.pose_sequence_match_reward, weight=50.0)
+    # velocity_match = RewTerm(func=mdp.pose_sequence_velocity_match_reward, weight=50.0)
+    #zero_reward = RewTerm(func=mdp.zero_reward, weight=0.0)
+    #pose_match = RewTerm(func=mdp.pose_match_bonus, weight=1.0, params={"threshold": 0.98})
+    #joint_velocity_match = RewTerm(func=mdp.joint_sequence_velocity_match_reward, weight=1.0)
+    #joint_match = RewTerm(func=mdp.joint_sequence_match_reward, weight=1.0)
+    quaternion_match = RewTerm(func=mdp.quaternion_sequence_match_reward, weight=1.0)
+    ee_match = RewTerm(func=mdp.ee_sequence_match_reward, weight=1.0)
+    #pose_loc = RewTerm(func=mdp.pose_loc_bonus, weight=1.0, params={"threshold": 0.98})
     # (1) Reward for moving forward
     # progress = RewTerm(func=mdp.progress_reward, weight=1.0, params={"target_pos": (1000.0, 0.0, 0.0)})
     # (2) Stay alive bonus
-    alive = RewTerm(func=mdp.is_alive, weight=2.0)
+    #alive = RewTerm(func=mdp.is_alive, weight=0.5)
     # (3) Reward for non-upright posture
-    upright = RewTerm(func=mdp.upright_posture_bonus, weight=0.5, params={"threshold": 0.93})
+    #upright = RewTerm(func=mdp.upright_posture_bonus, weight=0.05, params={"threshold": 0.85})
     # (4) Reward for moving in the right direction
     # move_to_target = RewTerm(
     #     func=mdp.move_to_target_bonus, weight=0.5, params={"threshold": 0.8, "target_pos": (1000.0, 0.0, 0.0)}
     # )
     # (5) Penalty for large action commands
-    action_l2 = RewTerm(func=mdp.action_l2, weight=-0.01)
+    #action_l2 = RewTerm(func=mdp.action_l2, weight=-0.01)
     # (6) Penalty for energy consumption
-    energy = RewTerm(
-        func=mdp.power_consumption,
-        weight=-0.005,
-        params={
-            "gear_ratio": {
-                ".*_waist.*": 67.5,
-                ".*_upper_arm.*": 67.5,
-                "pelvis": 67.5,
-                ".*_lower_arm": 45.0,
-                ".*_thigh:0": 45.0,
-                ".*_thigh:1": 135.0,
-                ".*_thigh:2": 45.0,
-                ".*_shin": 90.0,
-                ".*_foot.*": 22.5,
-            }
-        },
-    )
+    # energy = RewTerm(
+    #     func=mdp.power_consumption,
+    #     weight=-0.005,
+    #     params={
+    #         "gear_ratio": {
+    #             ".*_waist.*": 67.5,
+    #             ".*_upper_arm.*": 67.5,
+    #             "pelvis": 67.5,
+    #             ".*_lower_arm": 45.0,
+    #             ".*_thigh:0": 45.0,
+    #             ".*_thigh:1": 135.0,
+    #             ".*_thigh:2": 45.0,
+    #             ".*_shin": 90.0,
+    #             ".*_foot.*": 22.5,
+    #         }
+    #     },
+    # )
     # (7) Penalty for reaching close to joint limits
-    joint_limits = RewTerm(
-        func=mdp.joint_limits_penalty_ratio,
-        weight=-0.25,
-        params={
-            "threshold": 0.98,
-            "gear_ratio": {
-                ".*_waist.*": 67.5,
-                ".*_upper_arm.*": 67.5,
-                "pelvis": 67.5,
-                ".*_lower_arm": 45.0,
-                ".*_thigh:0": 45.0,
-                ".*_thigh:1": 135.0,
-                ".*_thigh:2": 45.0,
-                ".*_shin": 90.0,
-                ".*_foot.*": 22.5,
-            },
-        },
-    )
+    # joint_limits = RewTerm(
+    #     func=mdp.joint_limits_penalty_ratio,
+    #     weight=-0.25,
+    #     params={
+    #         "threshold": 0.98,
+    #         "gear_ratio": {
+    #             ".*_waist.*": 67.5,
+    #             ".*_upper_arm.*": 67.5,
+    #             "pelvis": 67.5,
+    #             ".*_lower_arm": 45.0,
+    #             ".*_thigh:0": 45.0,
+    #             ".*_thigh:1": 135.0,
+    #             ".*_thigh:2": 45.0,
+    #             ".*_shin": 90.0,
+    #             ".*_foot.*": 22.5,
+    #         },
+    #     },
+    # )
+    
 
 
 @configclass
@@ -367,11 +390,12 @@ class SwingEnvCfg(ManagerBasedRLEnvCfg):
     terminations: TerminationsCfg = TerminationsCfg()
     events: EventCfg = EventCfg()
 
+
     def __post_init__(self):
         """Post initialization."""
         # general settings
-        self.decimation = 2
-        self.episode_length_s = 16.0
+        self.decimation = 4
+        self.episode_length_s = 6.0
         # simulation settings
         self.sim.dt = 1 / 120.0
         self.sim.render_interval = self.decimation

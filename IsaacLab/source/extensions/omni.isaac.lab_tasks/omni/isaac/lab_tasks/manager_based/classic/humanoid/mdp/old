@@ -1,0 +1,54 @@
+class joint_sequence_match_reward(ManagerTermBase):
+    """Reward for matching the sequence of target poses."""
+
+    def __init__(self, env: ManagerBasedRLEnv, cfg: RewardTermCfg):
+        # initialize the base class
+        super().__init__(cfg, env)
+
+        self.weights = torch.tensor([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], device=env.device)
+        self.cur_timesteps = torch.zeros(env.num_envs, device=env.device, dtype=torch.int32)
+
+
+    def reset(self, env_ids: torch.Tensor):
+        # extract the used quantities (to enable type-hinting)
+        asset: Articulation = self._env.scene["robot"]
+        # compute projection of current heading to desired heading vector
+        self.cur_timesteps[env_ids] = 0
+
+
+    def __call__(
+        self,
+        env: ManagerBasedRLEnv,
+        asset_cfg: SceneEntityCfg = SceneEntityCfg("robot"),
+    ) -> torch.Tensor:
+        # extract the used quantities (to enable type-hinting)
+        asset: Articulation = env.scene[asset_cfg.name]
+
+        self.cur_timesteps += 1
+        target_poses = torch.stack([torch.tensor(pose_sequence[0], device=env.device) for i in range(env.num_envs)])
+
+
+        gt_150 = self.cur_timesteps > 150
+        target_poses[gt_150] = torch.tensor(pose_sequence[60], device=env.device)
+        # in_progress = self.cur_timesteps < 300
+        # cur_timesteps_clamped = torch.clamp(self.cur_timesteps - 30, 0, len(pose_sequence)-1)
+
+        # if in_progress.any():
+        #     target_poses[in_progress] = torch.tensor(
+        #         [pose_sequence[idx.item()] for idx in cur_timesteps_clamped[in_progress]], 
+        #         device=env.device
+        #     )
+        
+        # # Update poses for timesteps < 60
+        # mask_60 = self.cur_timesteps < 30
+        # if mask_60.any():
+        #     target_poses[mask_60] = torch.tensor(pose_sequence[0], device=env.device)
+
+
+        poses = obs_full.body_state_w(env, asset_cfg)
+        #print(torch.norm(poses[:, 3, :] - poses[:, 4, :], dim=1, keepdim=True))
+        pose_arrays = (poses - poses[:, 16, :].unsqueeze(1))
+        pose_diffs = (pose_arrays - target_poses)
+        #print(pose_arrays)
+        pose_rewards = torch.exp(-0.3 * torch.sum(pose_diffs ** 2, dim=(1, 2))) # 1 / (1 + torch.sum(torch.sum(pose_diffs ** 2, dim=1), dim=1).nan_to_num(1)).nan_to_num(0) # torch.exp(-0.03 * torch.sum(torch.sum(pose_diffs ** 2, dim=1), dim=1)).nan_to_num(0)
+        return pose_rewards
