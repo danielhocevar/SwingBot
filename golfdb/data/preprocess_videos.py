@@ -44,7 +44,7 @@ def preprocess_videos(anno_id, dim=160):
                     top, bottom = delta_h // 2, delta_h - (delta_h // 2)
                     left, right = delta_w // 2, delta_w - (delta_w // 2)
                     b_img = cv2.copyMakeBorder(resized, top, bottom, left, right, cv2.BORDER_CONSTANT,
-                                               value=[0.406*255, 0.456*255, 0.485*255])  # ImageNet means (BGR)
+                                               value=[0.406*255, 0.456*255, 0.485*255]) 
                     out.write(b_img)
             if count > events[-1]:
                 break
@@ -58,5 +58,3 @@ if __name__ == '__main__':
     if not os.path.exists(path):
         os.mkdir(path)
     preprocess_videos(df.id[1])
-    # p = Pool(6)
-    # p.map(preprocess_videos, df.id)
